@@ -1,0 +1,39 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      # - name: Test
+      #   run: npm run test
+
+      - name: Build docker image
+        run: docker build -t romdhanihana/xplanbackend:v1.0 .
+
+      - name: Log in to DockerHub
+        run: docker login -u romdhanihana -p "${{ secrets.DOCKERHUB_TOKEN }}"
+      - name: Push Docker image to DockerHub
+        run: docker push romdhanihana/xplanbackend:v1.0

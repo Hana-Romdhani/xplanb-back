@@ -1,0 +1,43 @@
+🚀 XPlanB Admin User Creation - DIRECT MONGODB COMMANDS
+=======================================================
+
+📋 Admin Credentials:
+📧 Email: admin@xplanb.com
+🔑 Password: Admin123!
+👤 Role: ADMIN
+
+🔧 DIRECT MONGODB COMMANDS:
+
+1. Open MongoDB Shell or MongoDB Compass
+2. Connect to your database (usually 'xplanb' or similar)
+3. Run this EXACT command:
+
+db.users.insertOne({
+  firstName: "Admin",
+  lastName: "User",
+  email: "admin@xplanb.com",
+  password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+  accountType: ["ADMIN"],
+  gender: "Male",
+  twoFactorEnabled: false,
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+4. Verify the admin was created:
+db.users.findOne({ email: "admin@xplanb.com" });
+
+🎯 Admin Features Available:
+   ✅ View all user complaints
+   ✅ Update complaint status
+   ✅ Access system-wide analytics
+   ✅ Monitor user activity logs
+   ✅ Manage user permissions
+
+🌐 Login at: http://localhost:5173
+
+ALTERNATIVE - If user already exists, just update role:
+db.users.updateOne(
+  { email: "admin@xplanb.com" },
+  { $set: { accountType: ["ADMIN"] } }
+);
