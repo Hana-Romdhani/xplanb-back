@@ -57,14 +57,14 @@ jobs:
       # 9️⃣ Construire l’image Docker
       - name: Build Docker image
         run: |
-          IMAGE_NAME=romdhanihana/xplanbackendv1.0.0
+          IMAGE_NAME=romdhanihana/xplanbackend
           VERSION=${GITHUB_SHA::7}
           docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest .
 
       # 🔟 Push vers DockerHub
       - name: Push Docker images
         run: |
-          IMAGE_NAME=romdhanihana/xplanbackendv1.0.0
+          IMAGE_NAME=romdhanihana/xplanbackend
           VERSION=${GITHUB_SHA::7}
           docker push $IMAGE_NAME:$VERSION
           docker push $IMAGE_NAME:latest
