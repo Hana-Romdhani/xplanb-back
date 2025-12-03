@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build, Test, SonarQube, Ngrok & Push Backend Docker Image
 
 on:
   push:
@@ -10,30 +10,61 @@ on:
 
 jobs:
   build:
+    name: Build & Analyze
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout du code
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v3
         with:
-          node-version: '18'
+          fetch-depth: 0
 
+      # 2️⃣ Setup Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      # 3️⃣ Installer les dépendances
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build
+      # 4️⃣ Build du backend
+      - name: Build backend
         run: npm run build
-
-      # - name: Test
-      #   run: npm run test
-
-      - name: Build docker image
-        run: docker build -t romdhanihana/xplanbackend:v1.0 .
-
+       
+      # 7️⃣ Log in to DockerHub
       - name: Log in to DockerHub
-        run: docker login -u romdhanihana -p "${{ secrets.DOCKERHUB_TOKEN }}"
-      - name: Push Docker image to DockerHub
-        run: docker push romdhanihana/xplanbackend:v1.0
+        uses: docker/login-action@v2
+        with:
+          username: romdhanihana
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 8️⃣ Exécuter l'analyse SonarQube
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_HOST_URL: https://nondiagrammatic-leeanne-mountainously.ngrok-free.dev # ou ngrok URL
+          SONAR_TOKEN: sqp_aa4eb2f05e9786d34366f20c0b6b5dfb5ea9066f
+        with:
+          args: >
+            -Dsonar.projectKey=Xplanb-Backend
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+
+      # 9️⃣ Construire l’image Docker
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=romdhanihana/xplanbackendv1.0.0
+          VERSION=${GITHUB_SHA::7}
+          docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest .
+
+      # 🔟 Push vers DockerHub
+      - name: Push Docker images
+        run: |
+          IMAGE_NAME=romdhanihana/xplanbackendv1.0.0
+          VERSION=${GITHUB_SHA::7}
+          docker push $IMAGE_NAME:$VERSION
+          docker push $IMAGE_NAME:latest
