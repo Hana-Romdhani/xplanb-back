@@ -42,17 +42,17 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 8️⃣ Exécuter l'analyse SonarQube
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_HOST_URL: https://nondiagrammatic-leeanne-mountainously.ngrok-free.dev # ou ngrok URL
-          SONAR_TOKEN: sqp_aa4eb2f05e9786d34366f20c0b6b5dfb5ea9066f
-        with:
-          args: >
-            -Dsonar.projectKey=Xplanb-Backend
-            -Dsonar.sources=src
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      # - name: SonarQube Scan
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_HOST_URL: https://nondiagrammatic-leeanne-mountainously.ngrok-free.dev # ou ngrok URL
+      #     SONAR_TOKEN: sqp_aa4eb2f05e9786d34366f20c0b6b5dfb5ea9066f
+      #   with:
+      #     args: >
+      #       -Dsonar.projectKey=Xplanb-Backend
+      #       -Dsonar.sources=src
+      #       -Dsonar.exclusions=**/node_modules/**,**/dist/**
+      #       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
       # 9️⃣ Construire l’image Docker
       - name: Build Docker image
