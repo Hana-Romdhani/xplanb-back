@@ -1,26 +1,32 @@
-FROM node:16-alpine AS builder
+# ---------- BUILD STAGE ----------
+FROM node:18-alpine AS builder
 
+# Create app directory
 WORKDIR /usr/src/app
 
+# Install dependencies
 COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
-RUN npm install 
-
-
+# Copy full project
 COPY . .
 
+# Build NestJS app
 RUN npm run build
-FROM node:16-alpine AS production
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+
+# ---------- PRODUCTION STAGE ----------
+FROM node:18-alpine AS production
+
+ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
+# Copy only required files
+COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/package*.json ./
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main.js"]
