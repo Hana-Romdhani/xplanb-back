@@ -27,6 +27,9 @@ COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/dist ./dist
 
+# Copy .env file from build stage
+COPY --from=builder /usr/src/app/.env .env
+
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]
