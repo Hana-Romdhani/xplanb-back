@@ -26,11 +26,7 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/dist ./dist
-RUN mkdir -p /usr/src/app/uploads/images \
-    && chown -R node:node /usr/src/app/uploads
-USER node
-
-
+ 
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]
