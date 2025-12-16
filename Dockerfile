@@ -13,6 +13,7 @@ FROM node:18-alpine AS production
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
+
 RUN apk add --no-cache su-exec
 
 COPY --from=builder /usr/src/app/package*.json ./
